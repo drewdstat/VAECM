@@ -49,6 +49,32 @@ parser.add_argument("--draft",
                         help="Is it a test? so we don't save.'",
                         action="store_true",
                     )
+
+parser.add_argument("-a","--archi", 
+                        help="Name of the architecture to use",
+                        choices=['Boubekki','Wendler','10z','SmallLayers','ExtraLayer','SmallExtraLayer',
+                                'OneIntLayer50','OneIntLayer20'], 
+                        default='Wendler', 
+                        type=str, 
+                    )
+
+parser.add_argument("-v","--beta", 
+                        help="Beta value",
+                        default=100.,
+                        type=float,
+                    )
+
+parser.add_argument("-c","--alpha", 
+                        help="Alpha value",
+                        default=1.,
+                        type=float,
+                    )
+
+parser.add_argument("-l","--lbd", 
+                        help="LBD value",
+                        default=.1,
+                        type=float,
+                    )
                     
 args = parser.parse_args()
 
@@ -76,27 +102,30 @@ del LOAD
 N,D  = DATA.shape
 K    = int( TRUE.max()+1 )
 OUT = int(AECM_UNIF[NAME]['OUT'])
-BETA = AECM_UNIF[NAME]['BETA']
-ALPHA = AECM_UNIF[NAME]['CC']
-BATCH = int(AECM_UNIF[NAME]['BATCH'])
-LBD = 1. # CNET_UNIF[NAME]['LBD']
+BETA = args.beta #AECM_UNIF[NAME]['BETA']
+ALPHA = args.alpha #AECM_UNIF[NAME]['CC']
+BATCH = args.batch #int(AECM_UNIF[NAME]['BATCH'])
+LBD = args.lbd #1. # CNET_UNIF[NAME]['LBD']
 
 if INIT == 'pre':
     AE = np.load(NAME+'/save/save-ae.npz',allow_pickle=True)['wgt']
 
-ARCHI = ([('input',D),
-            ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),
-        ],[('input' , OUT),
-            ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (D, 'glorot_uniform', 'glorot_normal') ),
-        ])
+    
+from Archi import *
+ARCHI = ARCHITECTURES[args.archi]
+# ARCHI = ([('input',D),
+#             ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),
+#         ],[('input' , OUT),
+#             ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (D, 'glorot_uniform', 'glorot_normal') ),
+#         ])
 
 
 if SAVE:
@@ -107,10 +136,10 @@ if SAVE:
     if not os.path.exists(NAME+'/save/'):
         os.mkdir(NAME+'/save/')
     print("*** I will save in ",FNAME)
-    if os.path.exists(FNAME):
-        print('Already done.')
-        sys.exit()
-        raise ValueError
+    # if os.path.exists(FNAME):
+    #     print('Already done.')
+    #     sys.exit()
+    #     raise ValueError
 
 LLK = []
 LBL,kLBL = [],[]
@@ -173,11 +202,12 @@ for r in range(args.runs):
 
     del MODEL
     
-    print( 'ARI: {:.5} NMI: {:.5} ACC: {:.5} EPC: {:.5}'.format(
+    print( 'ARI: {:.5} NMI: {:.5} ACC: {:.5} EPC: {:.5} kmARI:{:.5}'.format(
         np.mean(ARI), 
         np.mean(NMI), 
         np.mean(ACC), 
-        np.mean(EPC)
+        np.mean(EPC),
+        np.mean(kARI)
         )
     )
     

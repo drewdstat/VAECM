@@ -43,7 +43,15 @@ parser.add_argument("--draft",
                         help="Is it a test? so we don't save.'",
                         action="store_true",
                     )
-                    
+
+parser.add_argument("-a","--archi", 
+                        help="Name of the architecture to use",
+                        choices=['Boubekki','Wendler','10z','SmallLayers','ExtraLayer','SmallExtraLayer',
+                                'OneIntLayer50','OneIntLayer20'], 
+                        default='Wendler', 
+                        type=str, 
+                    )
+
 args = parser.parse_args()
 
 
@@ -71,19 +79,22 @@ N,D  = DATA.shape
 K    = int( TRUE.max()+1 )
 OUT = int(AECM_UNIF[NAME]['OUT'])
 
-ARCHI = ([('input',D),
-            ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),
-        ],[('input' , OUT),
-            ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
-            ('lrelu', .2 ),
-            ('dense', (D, 'glorot_uniform', 'glorot_normal') ),
-        ])
+from Archi import *
+ARCHI = ARCHITECTURES[args.archi]
+# ARCHI = ([('input',D),
+#             ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),
+#         ],[('input' , OUT),
+#             ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (100, 'glorot_uniform', 'glorot_normal') ),
+#             ('lrelu', .2 ),
+#             ('dense', (D, 'glorot_uniform', 'glorot_normal') ),
+#         ])
+
 
 if SAVE:
     FNAME = NAME+'/save/save-ae.npz'
@@ -93,10 +104,10 @@ if SAVE:
     if not os.path.exists(NAME+'/save/'):
         os.mkdir(NAME+'/save/')
     print("*** I will save in ",FNAME)
-    if os.path.exists(FNAME):
-        print('Already done.')
-        sys.exit()
-        raise ValueError
+    # if os.path.exists(FNAME):
+    #     print('Already done.')
+    #     sys.exit()
+    #     raise ValueError
     
 OPTIM = {
     'EX1':       'decay_sgd|2|.9', 
@@ -152,11 +163,12 @@ for r in range(args.runs):
 
     del MODEL
     
-    print( 'ARI: {:.5} NMI: {:.5} ACC: {:.5} EPC: {:.5}'.format(
+    print( 'ARI: {:.5} NMI: {:.5} ACC: {:.5} EPC: {:.5} kmARI:{:.5}'.format(
         np.mean(ARI), 
         np.mean(NMI), 
         np.mean(ACC), 
-        np.mean(EPC)
+        np.mean(EPC),
+        np.mean(kARI)
         )
     )
     
