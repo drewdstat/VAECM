@@ -57,11 +57,26 @@ ARCHITECTURES = {
             ('lrelu', .2 ),
             ('dense', (20, 'glorot_uniform', 'glorot_normal') ),
             ('lrelu', .2 ),
-            ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),
+            ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),  ## out = 4 
         ],[('input' , OUT),
             ('dense', (20, 'glorot_uniform', 'glorot_normal') ),
             ('lrelu', .2 ),
             ('dense', (50, 'glorot_uniform', 'glorot_normal') ),
+            ('lrelu', .2 ),
+            ('dense', (D, 'glorot_uniform', 'glorot_normal') ),
+        ]
+    ),
+    "SmallerLayers":(
+        [('input',D),
+            ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
+            ('lrelu', .2 ),
+            ('dense', (15, 'glorot_uniform', 'glorot_normal') ),
+            ('lrelu', .2 ),
+            ('dense', (OUT, 'glorot_uniform', 'glorot_normal') ),  ## out = 4 
+        ],[('input' , OUT),
+            ('dense', (15, 'glorot_uniform', 'glorot_normal') ),
+            ('lrelu', .2 ),
+            ('dense', (30, 'glorot_uniform', 'glorot_normal') ),
             ('lrelu', .2 ),
             ('dense', (D, 'glorot_uniform', 'glorot_normal') ),
         ]

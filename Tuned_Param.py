@@ -1,6 +1,6 @@
 CM_UNIF = {
     "EX1":{
-        "CC":       1, #230, #alpha
+        "CC":       1, # 230, #alpha
         "BATCH":    50,
         "Done":     'pre',#'rand + pre',
     },
@@ -65,14 +65,23 @@ CM_UNIF = {
 }
 
 AECM_UNIF = {
+    # "EX1":{
+    #     "OUT":      4, #n nodes in z layer
+    #     "BETA":     100.,
+    #     "CC":       1, #230, #alpha
+    #     "BATCH":    50,
+    #     "LBD":      .1,
+    #     "OPTIM":    'Adam',
+    #     "Done":     'rand + pre',
+    # },
     "EX1":{
-        "OUT":      4, #n nodes in z layer
-        "BETA":     100.,
-        "CC":       1, #230, #alpha
-        "BATCH":    50,
-        "LBD":      .1,
-        "OPTIM":    'Adam',
-        "Done":     'rand + pre',
+    "OUT":      4, #n nodes in z layer
+    "BETA":     100.,
+    "CC":       1, #230, #alpha
+    "BATCH":    50,
+    "LBD":      .1,
+    "OPTIM":    'Adam',
+    "Done":     'rand + pre',
     },
     "MNIST":{
         "OUT":      10,
