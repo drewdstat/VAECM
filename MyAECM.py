@@ -52,7 +52,7 @@ parser.add_argument("--draft",
 
 parser.add_argument("-a","--archi", 
                         help="Name of the architecture to use",
-                        choices=['Boubekki','Wendler','10z','SmallLayers','ExtraLayer','SmallExtraLayer',
+                        choices=['Boubekki','Wendler','10z','SmallLayers','SmallerLayers','ExtraLayer','SmallExtraLayer',
                                 'OneIntLayer50','OneIntLayer20'], 
                         default='Wendler', 
                         type=str, 
@@ -146,7 +146,7 @@ LBL,kLBL = [],[]
 ARI,NMI,ACC = [],[],[]
 kARI,kNMI,kACC = [],[],[]
 WGT,EPC = [],[]
-
+ari_list = []
 for r in range(args.runs):
     print( "\n>>> "+NAME+": AECM+"+INIT+" RUN=",r+1)
     MODEL = AECM( 
@@ -202,6 +202,8 @@ for r in range(args.runs):
 
     del MODEL
     
+    ari_list.append(ARI)
+
     print( 'ARI: {:.5} NMI: {:.5} ACC: {:.5} EPC: {:.5} kmARI:{:.5}'.format(
         np.mean(ARI), 
         np.mean(NMI), 
@@ -213,6 +215,7 @@ for r in range(args.runs):
     
     if SAVE:
         np.savez(FNAME,
+            ari_list=ari_list,
             llk=LLK,
             wgt=WGT,
             lbl=LBL,klbl=kLBL,
